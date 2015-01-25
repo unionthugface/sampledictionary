@@ -229,7 +229,6 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Glossary.cshtml" />
     <Content Include="Views\Terms\Edit.cshtml" />
@@ -280,9 +279,17 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
+       Other similar extension points exist, see Microsoft.Common.targets.-->
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-  </Target> -->
+  <Copy SourceFiles="HiddenSettings.template.config" 
+    DestinationFiles="HiddenSettings.config" SkipUnchangedFiles="true" 
+    Condition="!Exists('HiddenSettings.config')">
+    </Copy>
+	<Copy SourceFiles="HiddenConfig.template.config" 
+    DestinationFiles="HiddenConfig.config" SkipUnchangedFiles="true" 
+    Condition="!Exists('HiddenConfig.config')">
+    </Copy>
+  </Target>
 </Project>
