@@ -149,6 +149,8 @@ csx/
 
 # Custom
 HiddenSettings.config
+HiddenConfig.config
+
 # Windows Store app package directory
 AppPackages/
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using sample.Models;
+using sample.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,16 +17,24 @@ namespace sample.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpGet]
+        public ActionResult Glossary()
         {
-            ViewBag.Message = "Your contact page.";
+            GlossaryViewModel g = new GlossaryViewModel();
 
-            return View();
+            g.GlossaryOfTerms = TermService.GetTerms();
+
+            GlossaryViewModel h = new GlossaryViewModel();
+
+            if (g.GlossaryOfTerms != null)
+            {
+                h.GlossaryOfTerms = g.GlossaryOfTerms.OrderBy(x => x.Term).ToList();
+            }
+
+            return View(h);
         }
     }
 }

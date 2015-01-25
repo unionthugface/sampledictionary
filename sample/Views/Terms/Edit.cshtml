@@ -1,0 +1,106 @@
+﻿@model sample.Models.EditTermViewModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.HtmlHeading</h2>
+
+<div class="controls">
+    <form role="form" id="termInput">
+        <input type="hidden" name="externalid" id="uId" value="@(Model.GlossaryTerm != null ? Model.GlossaryTerm.ExternalId.ToString() : null)"  />
+        <div class="form-group control-group">
+            <label class="control-label" for="term">@{if(Model.GlossaryTerm == null){<text>Add</text>} else{<text>Edit</text>}} a term:</label>
+            <input type="text" class="form-control" name="term" id="termName" placeholder="Term" required data-validation-required-message="A term is required." autofocus value="@(Model.GlossaryTerm != null ? Model.GlossaryTerm.Term : null)" />
+            <p class="help-block"></p>
+        </div>
+        <div class="form-group">
+            <label for="term">@{if(Model.GlossaryTerm == null){<text>Add</text>}else{<text>Edit</text>}} a definition:</label>
+            <textarea class="form-control" name="definition" id="definitionText" required placeholder="Definition">@(Model.GlossaryTerm != null ? Model.GlossaryTerm.Definition : null)</textarea>
+        </div>
+        <input type="submit" class="btn btn-default" id="submitButton" value="Submit" />
+        @{
+            if (@Model.GlossaryTerm != null)
+            {
+                <hr />
+                <a class="btn btn-default" href="" id="deleteButton">Delete this term</a>
+            }
+        }
+    </form>
+</div>
+<div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalBox">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">x</button>
+                <h4 class="modal-title">Action Alert</h4>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="/Scripts/jqBootstrapValidation.js"></script>
+    <script type="text/javascript">
+
+        //Client-side Validation
+        Sample.Page.DataValidation = function () {
+            var validationOptions = {
+                submitSuccess: Sample.Page.SubmitTerm
+            };
+
+            $("input, select, textarea").not("[type=submit]").jqBootstrapValidation(validationOptions);
+        }
+
+
+        //Data Submission
+        Sample.Page.SubmitTerm = function (frm, evt) {
+            evt.preventDefault();
+            var newTerm = new Sample.Services.SubmitTerm();
+            newTerm.Data = $("#termInput").serialize();
+            Sample.Ajax(newTerm);
+        }
+
+        Sample.Page.ClickSubmit = function () {
+
+            $("#submitButton").bind("click", function (evt) {
+                evt.preventDefault();
+                Sample.Page.SubmitTerm();
+            });
+        }
+
+        //Data Deletion
+        Sample.Page.DeleteTerm = function () {
+
+            var deletedTerm = new Sample.Services.DeleteTerm();
+            deletedTerm.Data = $("#termInput").serialize();
+            Sample.Ajax(deletedTerm);
+        }
+
+        Sample.Page.ClickDelete = function () {
+            $("#deleteButton").bind("click", function (evt) {
+                evt.preventDefault();
+                Sample.Page.DeleteTerm();
+            });
+        }
+
+        //Modal Behavior
+        Sample.Page.OpenActionModal = function (action) {
+
+            var message = "Your term was " + action + ".";
+            $("#modalMessage").html(message);
+            $("#actionModal").modal("toggle");
+        }
+
+        Sample.Page.StartUp = function () {
+
+            Sample.Page.DataValidation();
+            //Sample.Page.ClickSubmit();
+            Sample.Page.ClickDelete();
+        }
+
+    </script>
+}

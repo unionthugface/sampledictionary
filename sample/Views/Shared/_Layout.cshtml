@@ -6,6 +6,7 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("style", required: false)
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -16,13 +17,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Dictionary", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Glossary", "Glossary", "Home")</li>
+                    <li>@Html.ActionLink("Add a Term", "Edit", "Terms")</li>
+                    <li class="pull-right">@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
             </div>
         </div>
@@ -37,6 +39,21 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/sample")
     @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            Sample.Layout.StartUp();
+        });
+
+        Sample.Layout.StartUp = function () {
+
+            if (Sample.Page.StartUp) {
+                Sample.Page.StartUp();
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+﻿@model sample.Models.GlossaryViewModel
+@{
+    ViewBag.Title = "Glossary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Glossary</h2>
+
+@{
+    if (@Model.GlossaryOfTerms == null)
+    {
+        <p>No terms yet.</p>
+        <a class="btn btn-default" href="/Terms/Edit">Add a Term</a>
+    }
+    else
+    {
+        foreach (var singleTerm in Model.GlossaryOfTerms)
+        {
+            <form role="form" class="rowOfData">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <input type="hidden" name="externalid" value="@singleTerm.ExternalId">
+                            <div class="col-md-3"><strong>@singleTerm.Term </strong><input type="hidden" name="term" value="@singleTerm.Term"></div>
+                            <div class="col-md-6">@singleTerm.Definition <input type="hidden" name="definition" value="@singleTerm.Definition"></div>
+                            <div class="col-md-3" style="text-align:right"><a href="~/Terms/Edit/@singleTerm.Term">Edit</a> | <a class="deleteButton" href="">Delete</a></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+    }
+}
+<div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalBox">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="false">x</button>
+                <h4 class="modal-title">Action Alert</h4>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        Sample.Page.StartUp = function () {
+
+            Sample.Page.ClickDelete();
+        }
+
+        //Data Deletion
+        Sample.Page.DeleteTerm = function (element) {
+
+            var deletedTerm = new Sample.Services.DeleteTerm();
+            deletedTerm.Data = $(element).closest(".rowOfData").serialize();
+            Sample.Ajax(deletedTerm);
+        }
+
+        Sample.Page.ClickDelete = function () {
+            $(".deleteButton").bind("click", function (evt) {
+                evt.preventDefault();
+                Sample.Page.DeleteTerm(this);
+            });
+        }
+
+        //Modal Behavior
+        Sample.Page.OpenActionModal = function (action) {
+
+            var message = "Your term was " + action + ".";
+            $("#modalMessage").html(message);
+            $("#actionModal").modal("toggle");
+        }        
+
+    </script>
+}
+
+
+
+
+
+
+
+
